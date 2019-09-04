@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Clone a part of Trello</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">   
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@3.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app" class="container mt-5">
+        <div class="row">
+            <div class="col-md-4 mt-3" v-for="(list, index) in lists" :key="index">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between">
+                            <h4>{{list.name}}</h4>
+                            <!-- <button v-if="list.status == 'saved'" class="btn btn-sm btn-danger">
+                                Eliminar
+                            </button> -->
+                            <button :class="list.status == 'creating' ? 'btn-warning' : 'btn-danger'" class="btn btn-sm" @click="removeList(index)">
+                                {{ list.status == 'creating' ? 'Cancelar' : 'Eliminar' }}
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form @submit.prevent="saveList(list)" action="/">
+                            <div class="form-group" v-if="list.status == 'creating'">
+                                <!-- Inicia componente card -->
+                                <card v-model="list.name"></card>  
+                                <!-- Termina componente card -->
+                            </div>
+                            <button v-if="list.status == 'creating'" class="btn btn-primary btn-block">
+                                Guardar
+                            </button>
+                            <!-- Agregar tarjeta -->
+                            <div class="form-group d-flex" v-for="(card, idx) in list.cards" :key="idx">
+                                <!-- Inicia componente c-input -->
+                                <c-input v-model="card.title" :readonly="card.readonly"></c-input>
+                                <!-- Termina componente c-input -->
+                                <v-icon style="font-size: 1.5rem; text-decoration: none; margin-right: 12px" @click="saveTitle(list, idx)" v-if="card.readonly == false && card.title != ''" right>mdi-checkbox-marked-circle</v-icon>
+                                <v-icon left style="font-size: 1.5rem; text-decoration: none; margin-top: -2px; margin-left: 10px" @click="editTitle(list, idx)" v-if="card.readonly == true">mdi-pencil</v-icon>
+                                <v-icon left style="font-size: 1.5rem; text-decoration: none; margin-top: -2px" @click="deleteTitle(list, idx)">mdi-delete</v-icon>
+
+                            </div>
+                            <button v-if="list.status == 'saved'" class="btn btn-success btn-block" @click="addCard(list)">Agregar tarjeta</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-3">
+                <button class="btn rounded-0 btn-outline-dark btn-block" @click="addList">
+                    Agregar lista
+                </button><br>
+            </div>
+        </div>
+    </div>
+
+    <!-- development version, includes helpful console warnings -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script type="module" src="./javascript.js"></script>
+</body>
+
+</html>
